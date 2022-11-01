@@ -11,6 +11,7 @@ passlib
 python-dotenv
 pytest
 pytest-flask
+pytest-mock
 pytest-runner
 pytest-factoryboy
 requests
