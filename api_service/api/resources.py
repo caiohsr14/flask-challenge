@@ -1,4 +1,4 @@
-from api_service.api.schemas import StockInfoSchema, StockQuerySchema
+from api_service.api.schemas import StockInfoObject, StockInfoSchema, StockQuerySchema
 from api_service.clients.stock import StockClient
 from api_service.config import STOCK_URL
 from api_service.extensions import db
@@ -23,8 +23,12 @@ class StockQuery(Resource):
         if not stock_data:
             abort(404, "Stock not found")
 
+        stock_info = StockInfoObject(stock_data)
+        if not stock_info.quote:
+            abort(404, "Stock quote not available")
+
         schema = StockInfoSchema()
-        return schema.dump(stock_data)
+        return schema.dump(stock_info)
 
 
 class History(Resource):

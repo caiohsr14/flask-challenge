@@ -2,7 +2,6 @@ import json
 
 import requests
 import responses
-from api_service.clients.stock import StockObject
 
 
 @responses.activate
@@ -37,7 +36,7 @@ def test_get_stock(stock_client):
         "symbol": "APPL.US",
     }
     result = stock_client.get_stock(fake_code)
-    assert result == StockObject(expected_data)
+    assert result == expected_data
 
 
 @responses.activate

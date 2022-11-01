@@ -31,6 +31,6 @@ class StockClient(object):
         )
         try:
             response.raise_for_status()
-            return StockObject(response.json())
+            return response.json()
         except (requests.exceptions.HTTPError, requests.exceptions.JSONDecodeError):
             return None

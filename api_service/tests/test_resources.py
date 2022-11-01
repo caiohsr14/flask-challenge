@@ -1,30 +1,48 @@
-from api_service.clients.stock import StockObject
-
-
 def test_stock_query_resource_get(test_client, mocker):
-    fake_stock_data = StockObject(
-        {
-            "high": None,
-            "low": None,
-            "open": None,
-            "close": None,
-            "name": "APPL.US",
-            "date": None,
-            "time": None,
-            "symbol": "APPL.US",
-        }
-    )
+    fake_stock_data = {
+        "time": "20:33:45",
+        "high": 13.42,
+        "name": "APPL.US",
+        "symbol": "APPL.US",
+        "low": 13.175,
+        "close": 13.32,
+        "open": 13.39,
+        "date": "2022-11-01",
+    }
 
     mock_stock_client = mocker.patch(
         "api_service.api.resources.StockQuery.stock_client"
     )
     mock_stock_client.get_stock.return_value = fake_stock_data
 
-    expected_result = {"company_name": "APPL.US", "symbol": "APPL.US", "quote": None}
+    expected_result = {"company_name": "APPL.US", "symbol": "APPL.US", "quote": 13.32}
 
     response = test_client.get("/api/v1/stock?q=test")
     assert response.get_json() == expected_result
     assert response.status_code == 200
+    mock_stock_client.get_stock.assert_called_once_with("test")
+
+
+def test_stock_query_resource_get_with_unavailable_quote(test_client, mocker):
+    fake_stock_data = {
+        "high": None,
+        "low": None,
+        "open": None,
+        "close": None,
+        "name": "APPL.US",
+        "date": None,
+        "time": None,
+        "symbol": "APPL.US",
+    }
+
+    mock_stock_client = mocker.patch(
+        "api_service.api.resources.StockQuery.stock_client"
+    )
+    mock_stock_client.get_stock.return_value = fake_stock_data
+
+    response = test_client.get("/api/v1/stock?q=test")
+    assert b"Stock quote not available" in response.data
+    assert response.status_code == 404
     mock_stock_client.get_stock.assert_called_once_with("test")
 
 
