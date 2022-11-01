@@ -1,5 +1,6 @@
 import requests
 import responses
+from stock_service.clients.stooq import StooqObject
 
 
 @responses.activate
@@ -24,7 +25,7 @@ def test_get_stock(stooq_client):
         "Name": "APPL.US",
     }
     result = stooq_client.get_stock(fake_code)
-    assert result == expected_data
+    assert result == StooqObject(expected_data)
 
 
 @responses.activate

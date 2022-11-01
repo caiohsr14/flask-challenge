@@ -2,7 +2,7 @@
 
 from flask import abort, request
 from flask_restful import Resource
-from stock_service.api.schemas import StockQuerySchema
+from stock_service.api.schemas import StockQuerySchema, StockSchema
 from stock_service.clients.stooq import StooqClient
 from stock_service.config import STOOQ_URL
 
@@ -26,4 +26,5 @@ class StockResource(Resource):
         if not stock_data:
             abort(404, "Stock not found")
 
-        return stock_data
+        schema = StockSchema()
+        return schema.dump(stock_data)
