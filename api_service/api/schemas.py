@@ -3,6 +3,10 @@
 from api_service.extensions import ma
 
 
+class StockQuerySchema(ma.Schema):
+    q = ma.String(required=True)
+
+
 class StockInfoSchema(ma.Schema):
     symbol = ma.String(dump_only=True)
     company_name = ma.String(dump_only=True)

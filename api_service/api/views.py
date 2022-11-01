@@ -1,10 +1,9 @@
 # encoding: utf-8
 
-from flask import Blueprint, current_app, jsonify
+from api_service.api import resources
+from flask import Blueprint, jsonify
 from flask_restful import Api
 from marshmallow import ValidationError
-from api_service.api import resources
-
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/v1")
 api = Api(blueprint)
