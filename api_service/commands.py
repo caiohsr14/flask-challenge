@@ -1,16 +1,12 @@
 # encoding: utf-8
 
 import click
+from flask import Blueprint
 from flask.cli import with_appcontext
 
+blueprint = Blueprint("admin", __name__)
 
-@click.group()
-def cli():
-    """Main entry point"""
-    pass
-
-
-@cli.command("init")
+@blueprint.cli.command("init")
 @with_appcontext
 def init():
     """Create a new admin user"""
@@ -21,9 +17,6 @@ def init():
     user = User(username="admin", email="admin@mail.com", password="admin", active=True, role='ADMIN')
     db.session.add(user)
     user = User(username="johndoe", email="johndoe@mail.com", password="john", active=True, role='USER')
+    db.session.add(user)
     db.session.commit()
     click.echo("created users.")
-
-
-if __name__ == "__main__":
-    cli()

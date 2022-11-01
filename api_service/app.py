@@ -1,9 +1,8 @@
 # encoding: utf-8
 
+from api_service import api, commands
+from api_service.extensions import db, migrate
 from flask import Flask
-from api_service import api
-from api_service.extensions import db
-from api_service.extensions import migrate
 
 
 def create_app(testing=False):
@@ -26,3 +25,4 @@ def configure_extensions(app):
 
 def register_blueprints(app):
     app.register_blueprint(api.views.blueprint)
+    app.register_blueprint(commands.blueprint)
