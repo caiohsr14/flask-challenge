@@ -1,14 +1,14 @@
 # encoding: utf-8
 
 import pytest
-from dotenv import load_dotenv
-
-from api_service.models import User
 from api_service.app import create_app
+from api_service.clients.stock import StockClient
 from api_service.extensions import db as _db
+from api_service.models import User
+from dotenv import load_dotenv
 from pytest_factoryboy import register
-from .factories import UserFactory
 
+from .factories import UserFactory
 
 register(UserFactory)
 
@@ -36,13 +36,20 @@ def db(app):
 @pytest.fixture
 def admin_user(db):
     user = User(
-        username='admin',
-        email='admin@admin.com',
-        password='admin',
-        role='ADMIN'
+        username="admin", email="admin@admin.com", password="admin", role="ADMIN"
     )
 
     db.session.add(user)
     db.session.commit()
 
     return user
+
+
+@pytest.fixture
+def test_client(app):
+    return app.test_client()
+
+
+@pytest.fixture
+def stock_client():
+    return StockClient("https://example.com/")
