@@ -1,4 +1,9 @@
-from api_service.api.schemas import StockInfoObject, StockInfoSchema, StockQuerySchema
+from api_service.api.schemas import (
+    StockHistorySchema,
+    StockInfoObject,
+    StockInfoSchema,
+    StockQuerySchema,
+)
 from api_service.clients.stock import StockClient
 from api_service.config import STOCK_URL
 from api_service.extensions import db, pwd_context
@@ -64,9 +69,16 @@ class History(Resource):
     Returns queries made by current user.
     """
 
+    @jwt_required()
     def get(self):
-        # TODO: Implement this method.
-        pass
+        user_id = get_jwt()["user_id"]
+
+        # marshmallow is being funny, so we're ordering in memory
+        calls = db.session.execute(
+            db.select(StockCall).filter_by(user_id=user_id)
+        ).scalars()
+        schema = StockHistorySchema(many=True)
+        return sorted(schema.dump(calls), key=lambda x: x["date"], reverse=True)
 
 
 class Stats(Resource):
