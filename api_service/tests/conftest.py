@@ -5,12 +5,18 @@ import json
 import pytest
 from api_service.app import create_app
 from api_service.clients.stock import StockClient
+from api_service.extensions import db as _db
 
 
 @pytest.fixture(scope="session")
 def app():
     app = create_app(testing=True)
     return app
+
+
+@pytest.fixture()
+def db():
+    return _db
 
 
 @pytest.fixture
