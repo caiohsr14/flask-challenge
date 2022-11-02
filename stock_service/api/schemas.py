@@ -3,6 +3,10 @@
 from stock_service.extensions import marsh
 
 
+class StockQuerySchema(marsh.Schema):
+    q = marsh.String(required=True)
+
+
 class StockSchema(marsh.Schema):
 
     symbol = marsh.String(dump_only=True)

@@ -75,10 +75,65 @@ The following features are optional to implement, but if you do, you'll be ranke
 * Use JWT instead of basic authentication for endpoints.
 
 ## How to run the project
-* Create a virtualenv: `python -m venv virtualenv` and activate it `. virtualenv/bin/activate`.
-* Install dependencies: `pip install -r requirements.txt`
-* Start the api service: `cd api_service ; flask db migrate; flask db upgrade ; flask run`
-* Start the stock service: `cd stock_service ; flask run`
+The project is available through docker and docker-compose.
 
-__Important:__ If your implementation requires different steps to start the services
-(like starting a rabbitMQ consumer), document them here!
+Rename the `.flaskenv.example` file into `.flaskenv` in both apps and change any desired variable.
+
+To initialize the project, run the apps and add initial user data:
+```
+$ make init
+```
+The command above adds two users available, an admin user `admin:admin` and a regular user `johndoe:john`.
+After running the command above, the apps will be available at `localhost:5000` and `localhost:5001` respectively.
+
+To rebuild the docker-compose:
+```
+$ make build
+```
+
+To run in daemon:
+```
+$ make run
+```
+
+Running tests:
+```
+$ make test-api
+$ make test-stock
+```
+
+## Development commands
+The makefile has two commands available for the database migrations
+
+To generate a new migration based on schema changes:
+```
+$ make db-migrate msg="Migration message"
+```
+
+To upgrade the current database to head:
+```
+$ make db-upgrade
+```
+
+## Issues with testing
+Unfortunately it wasn't possible as of now to have a dedicated database for testing purposes, so the current testing uses the generated sqlite database from the main application, and makes use of the initial data from the two inserted users. So make sure to run `make init` before running tests!
+
+
+## Differences from the base project
+The api service now uses JWT authentication, the token generation is available through the `login` endpoint, which is a POST that takes the following JSON body:
+```json
+{
+  "username": "username",
+  "password": "password"
+}
+```
+
+Every other endpoint from the api service now requires a bearer authentication, through a `Bearer {token}` authorization header.
+
+## TO-DOs
+* Add decent logging
+* Spend even more hours figuring out why this combination of libs make it so hard to use a testing in-memory database
+* Add production deployment steps and example environment through gunicorn
+* Add RabbitMQ communication between the services
+* Add pagination to the history endpoint
+* Add swagger or redoc for the api documentation

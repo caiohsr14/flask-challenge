@@ -1,7 +1,6 @@
 marshmallow>=3
 factory_boy
 flask
-flask-httpauth
 flask-restful
 flask-migrate
 flask-sqlalchemy
@@ -11,5 +10,9 @@ passlib
 python-dotenv
 pytest
 pytest-flask
+pytest-mock
 pytest-runner
 pytest-factoryboy
+requests
+responses
+flask-jwt-extended
