@@ -11,7 +11,6 @@ class Config(object):
 
 
 class DevelopmentConfig(Config):
-    TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:////app/api_service/api_service.sqlite3"
 
 
