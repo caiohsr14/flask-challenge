@@ -3,7 +3,7 @@
 import os
 
 from api_service import api, commands
-from api_service.extensions import db, migrate
+from api_service.extensions import db, jwt, migrate
 from flask import Flask
 
 
@@ -27,6 +27,7 @@ def create_app(testing=False):
 def configure_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
+    jwt.init_app(app)
 
 
 def register_blueprints(app):

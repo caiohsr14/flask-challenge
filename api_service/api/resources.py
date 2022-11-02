@@ -1,9 +1,31 @@
 from api_service.api.schemas import StockInfoObject, StockInfoSchema, StockQuerySchema
 from api_service.clients.stock import StockClient
 from api_service.config import STOCK_URL
-from api_service.extensions import db
-from flask import abort, request
+from api_service.extensions import db, pwd_context
+from api_service.models import User
+from flask import abort, jsonify, request
+from flask_jwt_extended import create_access_token, jwt_required
 from flask_restful import Resource
+
+
+class Login(Resource):
+    def post(self):
+        json_data = request.get_json()
+        username = json_data["username"]
+        password = json_data["password"]
+
+        user = db.session.execute(db.select(User).filter_by(username=username)).scalar()
+        if not user:
+            abort(401, "Invalid user credentials")
+
+        valid_pwd = pwd_context.verify(password, user.password)
+        if not valid_pwd:
+            abort(401, "Invalid user credentials")
+
+        access_token = create_access_token(
+            username, additional_claims={"role": user.role}
+        )
+        return jsonify(token=access_token)
 
 
 class StockQuery(Resource):
@@ -13,6 +35,7 @@ class StockQuery(Resource):
 
     stock_client = StockClient(STOCK_URL)
 
+    @jwt_required()
     def get(self):
         query_schema = StockQuerySchema()
         errors = query_schema.validate(request.args)
